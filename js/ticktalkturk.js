@@ -35,7 +35,7 @@ var conversation = {
         "Sorry, I don\'t understand your answer. If you forget how to answer the question, please type &quot;<i>instruction</i>&quot;."
     ],
     "optional": [
-        "Nice. The mandatory part of this task has been done. Do you want to do more? No worries, you'll get paid.",
+        "Nice! Do you want to continue to the next question?",
         "You can stop the task anytime by typing \"<i>stop task</i>\".",
         "buttons-only:#I want to continue.%[continue]#I want to stop now.%[stop]#"
     ],
@@ -167,7 +167,7 @@ var taketurn = function(chatbot, message) {
 
 };
 
-var get_question = function(condition = 0) { //0:normal, 1:edit, 2:invalid
+var get_question = function(condition = 0) { // 0: normal, 1: edit, 2: invalid
     var question = [];
     switch (condition) {
         case 1:
@@ -184,38 +184,89 @@ var get_question = function(condition = 0) { //0:normal, 1:edit, 2:invalid
             }
             if (question_id == 1) Object.assign(question, conversation["first_question"]);
     }
+
+    var qid = (question_id + id_offset - 1) % task.questions.length;
+    var current_question = task.questions[qid];
+
     // get content about question
-    var qid = (question_id + id_offset - 1) % task.questions.length + 1;
-    task["questions"][qid - 1]["question"].forEach(function(e, i) {
+    current_question.question.forEach(function(e, i) {
         if (!i) question.push("<b>Q" + question_id + ":</b> " + e);
         else question.push(e);
     });
+
+    // Add potential answers as buttons, if available
+    if (current_question.answers) {
+        var answer_buttons = current_question.answers.map(function(answer) {
+            return `#${answer}.%[${answer}]`;
+        }).join("");
+
+        if (answer_buttons) {
+            question.push(`buttons-only:${answer_buttons}`);
+        }
+    }
+
     return question;
-}
+};
+var extractNextConv = function(message) {
+    var match = message.match(/\%\[(.*?)\]/);
+    return match ? match[1] : null;
+};
 
 var push_question = function(chatbot) {
-    if (max_question_id >= task.questions.length || task_stopped) {
+    var last_answer = answers[answers.length - 1];
+    var last_answer = last_answer ? extractNextConv(last_answer) : last_answer;
+    var next_question_id;
+    console.log(last_answer);
+    if (current_conv === "question") {
+        switch (last_answer) {
+            case "apples":
+                next_question_id = "taste_apples";
+                break;
+            case "bananas":
+                next_question_id = "taste_bananas";
+                break;
+            case "sweet":
+                if (answers.includes("apples")) next_question_id = "dish_apples_sweet";
+                if (answers.includes("bananas")) next_question_id = "dish_bananas_sweet";
+                break;
+            case "salty":
+                if (answers.includes("apples")) next_question_id = "dish_apples_salty";
+                if (answers.includes("bananas")) next_question_id = "dish_bananas_salty";
+                break;
+            default:
+                next_question_id = null;
+        }
+    }
+
+    if (!next_question_id && (max_question_id >= task.questions.length || task_stopped)) {
         chatbot.talk(get_review());
         current_conv = "review";
         return;
     }
-    if ( !optional_questions && max_question_id == task.question_number) {
+
+    if (!optional_questions && max_question_id == task.question_number) {
         optional_questions = true;
         chatbot.talk(conversation["optional"]);
         current_conv = "optional";
         return;
     }
+
     max_question_id += 1;
     question_id = max_question_id;
 
-    if ( max_question_id > 1 && max_question_id % 10 == 1 ) {
+    if (next_question_id) {
+        var next_question_index = task.questions.findIndex(q => q.id === next_question_id);
+        id_offset = next_question_index - question_id + 1;
+    }
+
+    if (max_question_id > 1 && max_question_id % 10 == 1) {
         chatbot.talk(conversation["break"]);
         current_conv = "break";
     } else {
         chatbot.talk(get_question());
         current_conv = "question";
     }
-}
+};
 
 var stop_task = function(chatbot) {
     if (typeof answers[max_question_id-1] === "undefined") max_question_id -= 1;

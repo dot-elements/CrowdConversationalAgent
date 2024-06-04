@@ -28,19 +28,23 @@ var task = {
         },
         {
             "id": "dish_apples_sweet",
-            "question": ["We recommend apple pie!"]
+            "question": ["We recommend apple pie!"],
+            "answers": ["Ok"]
         },
         {
             "id": "dish_apples_salty",
-            "question": ["We recommend apple with cheese!"]
+            "question": ["We recommend apple with cheese!"],
+            "answers": ["Ok"]
         },
         {
             "id": "dish_bananas_sweet",
-            "question": ["We recommend banana smoothie!"]
+            "question": ["We recommend banana smoothie!"],
+            "answers": ["Ok"]
         },
         {
             "id": "dish_bananas_salty",
-            "question": ["We recommend banana with peanut butter!"]
+            "question": ["We recommend banana with peanut butter!"],
+            "answers": ["Ok"]
         }
     ]
 };

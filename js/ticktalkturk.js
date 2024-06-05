@@ -12,7 +12,7 @@ var id_offset = 0;  // ID of the first question
 
 var conversation = {
     "start": [
-        "Hey! I'm Andrea. could you please help me with a task called <b>__TASK_NAME__</b>?",
+        "Hey! I'm StressLess. Would you like to participate in a  <b>__TASK_NAME__</b> exercise?",
         "I think you want to see the task instructions, right?",
         "buttons-only:#Yes, I want to see the task instructions.%[yes]#No, I don\'t.%[no]"
     ],
@@ -79,13 +79,14 @@ var start_task = function() {
 
 var taketurn = function(chatbot, message) {
     // this callback function is used for processing users message and then decide how chatbot should reply.
+    console.log()
     switch (current_conv) {
         case "start":
             if (message.includes("[yes]")) {
                 chatbot.talk(task["instruction"].concat(conversation["instructions"]));
                 current_conv = "instructions";
             } else if (message.includes("[no]")) {
-                current_conv = "fruit";
+                current_conv = task["questions"][0]["id"];
                 chatbot.talk(get_question());
             } else {
                 chatbot.talk(text_unsure.concat([
@@ -95,7 +96,7 @@ var taketurn = function(chatbot, message) {
             }
             break;
         case "instructions":
-            current_conv = "fruit";
+            current_conv = task["questions"][0]["id"];
             chatbot.talk(get_question());
             break;
         // case "edit":
@@ -125,21 +126,25 @@ var taketurn = function(chatbot, message) {
             break;
         case "bye":
             break;
-        case "fruit":
-        case "taste_apples":
-        case "taste_bananas":
+        case task["questions"][0]["id"]:
+        case task["questions"][1]["id"]:
+        case task["questions"][2]["id"]:
+        case task["questions"][3]["id"]:
+        case task["questions"][4]["id"]:
+        case task["questions"][5]["id"]:
+        case task["questions"][6]["id"]:
+        case task["questions"][7]["id"]:
+        case task["questions"][8]["id"]:
+
             if (!task.validate(message)) {
                 chatbot.talk(get_question());
                 break;
             }
-            messageUtterance = message ? extractNextConv(message) : message;
+            var messageUtterance = message!== null ? extractNextConv(message) : message;
             answers.push(messageUtterance);
             push_question(chatbot);
             break;
-        case "dish_apples_sweet":
-        case "dish_apples_salty":
-        case "dish_bananas_sweet":
-        case "dish_bananas_salty":
+        case task["questions"][9]["id"]:
             // After the recommendation, move to the review state
             chatbot.talk(get_review());
             current_conv = "review";
@@ -156,7 +161,7 @@ var get_question = function() {
 
     if (current_question) {
         current_question.question.forEach(function(e, i) {
-            if (!i) question.push("<b>Q:</b> " + e);
+            if (!i) question.push(e);
             else question.push(e);
         });
 
@@ -182,11 +187,51 @@ var push_question = function(chatbot) {
     var last_answer = answers[answers.length - 1];
     var next_question_id;
     switch (last_answer) {
-        case "apples":
-            next_question_id = "taste_apples";
+        case task["questions"][0]["answers"][0]:
+        case task["questions"][0]["answers"][1]:
+        case task["questions"][0]["answers"][2]:
+        case task["questions"][0]["answers"][3]:
+        case task["questions"][0]["answers"][4]:
+            next_question_id = task["questions"][1]["id"];
             break;
-        case "bananas":
-            next_question_id = "taste_bananas";
+        case task["questions"][1]["answers"][0]:
+            next_question_id = task["questions"][2]["id"];
+            break;
+        case task["questions"][1]["answers"][1]:
+            next_question_id = task["questions"][3]["id"];
+            break;
+        case task["questions"][1]["answers"][2]:
+            next_question_id = task["questions"][4]["id"];
+            break;
+        case task["questions"][1]["answers"][3]:
+            next_question_id = task["questions"][5]["id"];
+            break;
+        case task["questions"][2]["answers"][0]:
+        case task["questions"][2]["answers"][1]:
+        case task["questions"][2]["answers"][2]:
+        case task["questions"][2]["answers"][3]:
+        case task["questions"][2]["answers"][4]:
+        case task["questions"][2]["answers"][5]:
+            next_question_id = task["questions"][6]["id"];
+            break;
+        case survey_answers[0]:
+        case survey_answers[1]:
+        case survey_answers[2]:
+        case survey_answers[3]:
+        case survey_answers[4]:
+            if(current_conv === task["questions"][6]["id"]) {
+                next_question_id = task["questions"][7]["id"];
+            }
+            if(current_conv === task["questions"][7]["id"]) {
+                next_question_id = task["questions"][8]["id"];
+            }
+            if(current_conv === task["questions"][8]["id"]) {
+                next_question_id = task["questions"][9]["id"];
+            }
+            // if(current_conv === task["questions"][9]["id"]) {
+            //     current_conv = 'review';
+            //     return;
+            // }
             break;
         case "sweet":
             if (answers.includes("apples")) {next_question_id = "dish_apples_sweet";}

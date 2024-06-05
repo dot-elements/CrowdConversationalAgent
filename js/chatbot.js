@@ -60,7 +60,7 @@ var Chatbot = function(element, taketurn, show_message = bubble) {
                 send_time:  Date.now(),
                 text:       message["text"]
             });
-            if ( message["text"] != "__interruption__" ) this.show_message("Chatbot:"+message["text"]);
+            if ( message["text"] != "__interruption__" ) this.show_message("StressLess:"+message["text"]);
         } else if ( person == "user" ) {
             this.history.push({
                 person:     "user",

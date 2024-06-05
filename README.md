@@ -18,7 +18,9 @@ CSCW 2020 Demonstration.
 - The workflow of [conversational microtask crowdsourcing](https://qiusihang.github.io/files/publications/chi2020_worker_engagement.pdf) is defined in `./js/ticktalkturk.js` (*taketurn* function).
 
 - The examples of crowdsourcing tasks are in the folder `./tasks/captcha/`.
-
+## Install 
+Use nmp install
+run with node server.js
 ## Usage
 
 You can use the following code to deploy conversational crowdsourcing tasks on the *Design Layout* page for Amazon's Mechanical Turk. You can also find the code in `index.html`, which is an example HIT (human intelligence task).

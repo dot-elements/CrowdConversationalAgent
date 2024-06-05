@@ -9,7 +9,12 @@ var question_id = 0; // ID of current question
 var max_question_id = 0; // ID of the last pushed question
 var question_length = 0;
 var id_offset = 0;  // ID of the first question
+function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
 
+var PROLIFIC_PID = getQueryParam('PROLIFIC_PID');
 var conversation = {
     "start": [
         "Hey! I'm StressLess. Would you like to participate in a  <b>__TASK_NAME__</b> exercise?",
@@ -123,7 +128,7 @@ var taketurn = function(chatbot, message) {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ answers: answers, engagement: engagement }),
+                    body: JSON.stringify({ pid: PROLIFIC_PID, answers: answers, engagement: engagement }),
                 }).then(response => response.text())
                     .then(data => {
                         console.log(data);

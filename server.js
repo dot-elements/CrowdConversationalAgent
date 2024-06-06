@@ -5,7 +5,7 @@ const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const app = express();
 const PORT = process.env.PORT || 3000;
-const csvFilePath = 'answers.csv';
+const csvFilePath = 'data/answers.csv';
 let csvWriter;
 
 function initializeCsvWriter(headers) {

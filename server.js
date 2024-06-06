@@ -5,7 +5,7 @@ const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const app = express();
 const PORT = process.env.PORT || 3000;
-const csvFilePath = './data/answers.csv'; // this is for deployment! remove the ./
+const csvFilePath = process.env.RAILWAY_VOLUME_MOUNT_PATH + '/answers.csv'; // this is for deployment! remove the ./
 let csvWriter;
 
 function initializeCsvWriter(headers) {

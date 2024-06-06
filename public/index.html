@@ -1,37 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Conversational Microtask Crowdsourcing</title>-->
-<!--</head>-->
-
-<!--<body><div style="position:absolute; top:20px; bottom:20px; left:20px; right:20px; overflow:auto; border:1px solid black">-->
-
-<!--&lt;!&ndash;<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>&ndash;&gt;-->
-
-<!--<crowd-form answer-format="flatten-objects" style="position:absolute;top:5px;left:20px;right:20px;bottom:10px">-->
-<!--    <div id="chatbot"></div>-->
-<!--</crowd-form>-->
-
-<!--<script src="public/js/chatbot.js"></script>-->
-<!--<script src="public/tasks/captcha/task_aligned.js"></script> &lt;!&ndash; load crowdsourcing microtasks &ndash;&gt;-->
-<!--<script src="public/js/ticktalkturk.js"></script>-->
-<!--<script>-->
-<!--    var chatbot = new Chatbot(document.getElementById("chatbot"), taketurn);-->
-<!--    // taketurn is a callback function defined in ticktalkturk.js-->
-
-<!--    window.onload = start_task;-->
-<!--    // start_task is an initialization function defined in ticktalkturk.js-->
-
-<!--    document.querySelector('crowd-form').onsubmit = function(e) {-->
-<!--        if ( document.getElementById("chat-answers").value == "" ) e.preventDefault();-->
-<!--    };-->
-<!--</script>-->
-
-<!--</div></body>-->
-
-<!--</html>-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,26 +11,34 @@
     </crowd-form>
 
     <script src="./js/chatbot.js"></script>
-    <script src="/tasks/captcha/task_aligned.js"></script> <!-- load crowdsourcing microtasks -->
+    <!-- Removed the direct loading of task_aligned.js and task_not_aligned.js -->
     <script src="./js/ticktalkturk.js"></script>
+
     <script>
         var chatbot = new Chatbot(document.getElementById("chatbot"), taketurn);
 
-        window.onload = start_task;
+        window.onload = function() {
 
-        // Custom form submission handler
-        // document.querySelector('crowd-form').onsubmit = function(e) {
-        //     console.log('Form is being submitted with answers:', document.getElementById("chat-answers").value);
-        //     if (document.getElementById("chat-answers").value == "") {
-        //         e.preventDefault(); // Prevent the form submission if there are no answers
-        //         console.log('Form submission prevented due to empty answers.');
-        //     } else {
-        //         // Optionally, you can log or alert to confirm the submission
-        //         console.log('Form is being submitted with answers:', document.getElementById("chat-answers").value);
-        //     }
-        // };
+            // Randomly select a script
+            var scripts = ['/tasks/captcha/task_aligned.js', '/tasks/captcha/task_not_aligned.js'];
+            var randomIndex = Math.floor(Math.random() * scripts.length);
+            var selectedScript = scripts[randomIndex];
+
+            // Create a script element
+            var script = document.createElement('script');
+            script.src = selectedScript;
+
+            // Append the script element to the document head
+            document.head.appendChild(script);
+            start_task();
+        };
     </script>
+
 </div>
 </body>
 </html>
 
+<script src="./js/chatbot.js"></script>
+<script src="/tasks/captcha/task_aligned.js"></script> <!-- load crowdsourcing microtasks -->
+<script src="/tasks/captcha/task_not_aligned.js"></script>
+<script src="./js/ticktalkturk.js"></script>

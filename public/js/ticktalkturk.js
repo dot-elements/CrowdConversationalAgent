@@ -254,7 +254,6 @@ var push_question = function(chatbot) {
         case task["questions"][2]["answers"][3]:
         case task["questions"][2]["answers"][4]:
         case task["questions"][2]["answers"][5]:
-            console.log("in question")
             next_question_id = "attention"
             //next_question_id = task["questions"][6]["id"]; //here
             break;
@@ -317,7 +316,7 @@ var stop_task = function(chatbot) {
 var get_review = function() {
     var ans_string = "";
     review_process = true;
-    for (var i = 0; i < max_question_id; i++)
+    for (var i = 0; i <= max_question_id; i++)
         ans_string += "<br/><b>Q" + (i + 1) + ":</b> " + answers[i];
     var review = []
     conversation["review"].forEach((item, i) => {

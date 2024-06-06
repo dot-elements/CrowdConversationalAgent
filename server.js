@@ -55,6 +55,26 @@ app.post('/submit', (req, res) => {
             res.status(500).send('Error saving answers');
         });
 });
+// Route to serve the CSV file for download
+app.get('/results', (req, res) => {
+    const file = path.resolve(csvFilePath);
+    res.download(file); // Set disposition and send it.
+});
+
+// Route to output the CSV file content as JSON
+app.get('/api/results', (req, res) => {
+    const results = [];
+    fs.createReadStream(csvFilePath)
+        .pipe(csvParser())
+        .on('data', (data) => results.push(data))
+        .on('end', () => {
+            res.json(results);
+        })
+        .on('error', (error) => {
+            console.error('Error reading CSV file', error);
+            res.status(500).send('Error reading results');
+        });
+});
 
 // Default route to serve index.html
 app.get('/', (req, res) => {

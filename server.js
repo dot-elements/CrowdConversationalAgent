@@ -15,9 +15,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Route to handle form submissions
 app.post('/submit', (req, res) => {
-    const {pid, answers, engagement} = req.body;
+    const {pid, answers, engagement, alignment} = req.body;
     // Save the answers to a file or database
-    console.log('Received answers:', pid,  answers, engagement);
+    console.log('Received answers:', pid,  answers, engagement, alignment);
     fs.writeFileSync('answers.json', JSON.stringify(answers, null, 2)); //change this to also output id answers and engagement
     res.send('Answers received');
 });

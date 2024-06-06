@@ -33,7 +33,7 @@ You can use the following code to deploy conversational crowdsourcing tasks on t
 </crowd-form>
 
 <script src="https://qiusihang.github.io/ticktalkturk/js/chatbot.js"></script>
-<script src="https://qiusihang.github.io/ticktalkturk/tasks/captcha/task1.js"></script> <!-- load crowdsourcing microtasks -->
+<script src="https://qiusihang.github.io/ticktalkturk/tasks/captcha/task_not_aligned.js"></script> <!-- load crowdsourcing microtasks -->
 <script src="https://qiusihang.github.io/ticktalkturk/js/ticktalkturk.js"></script>
 <script>
     var chatbot = new Chatbot(document.getElementById("chatbot"), taketurn);

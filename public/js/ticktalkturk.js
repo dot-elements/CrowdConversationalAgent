@@ -9,6 +9,7 @@ var question_id = 0; // ID of current question
 var max_question_id = 0; // ID of the last pushed question
 var question_length = 0;
 var id_offset = 0;  // ID of the first question
+var attention_check = false
 function getQueryParam(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
@@ -19,7 +20,7 @@ var conversation = {
     "start": [
         "Hey! I'm StressLess. Would you like to participate in a  <b>__TASK_NAME__</b> exercise?",
         "I think you want to see the task instructions, right?",
-        "buttons-only:#Yes, I want to see the task instructions.%[yes]#No, I don\'t.%[no]"
+        "buttons-only:#Yes, I want to see the task instructions.%[yes]"
     ],
     "instructions": [
         "Good. I think you now understand how to complete tasks. Shall we move on?",
@@ -61,7 +62,18 @@ var conversation = {
         "https://app.prolific.com/submissions/complete?cc=CZU3XDB6",
         "Or by using the code CZU3XDB6",
         "Bye!"
-    ]
+    ],
+    "bye_not_for_you": [
+        "You have very low stress levels. That's great!",
+        "In this case, however, this study may not be for you.",
+        "Thank you for your input!",
+        "Bye!"
+
+    ],
+    "attention": [
+        "<b>ATTENTION CHECK:</b> Please select 'strongly agree' to show that you are paying attention to this question.",
+        "buttons-only:#Strongly disagree.%[strongly_disagree]#Disagree.%[disagree]#Neutral.%[neutral]#Agree.%[agree]#Strongly agree.%[strongly_agree]"
+    ],
 };
 
 var strip = function(text) {
@@ -92,13 +104,10 @@ var taketurn = function(chatbot, message) {
             if (message.includes("[yes]")) {
                 chatbot.talk(task["instruction"].concat(conversation["instructions"]));
                 current_conv = "instructions";
-            } else if (message.includes("[no]")) {
-                current_conv = task["questions"][0]["id"];
-                chatbot.talk(get_question());
             } else {
                 chatbot.talk(text_unsure.concat([
                     "I think you want to see the task instructions, right?",
-                    "buttons-only:#Yes, I want to see the task instructions.%[yes]#No, I don\'t.%[no]"
+                    "buttons-only:#Yes, I want to see the task instructions.%[yes]"
                 ]));
             }
             break;
@@ -117,18 +126,25 @@ var taketurn = function(chatbot, message) {
         //         current_conv = "review";
         //     }
         //     break;
+        case "attention":
+            var messageUtterance = extractNextConv(message)
+            if (messageUtterance === 'strongly_agree')
+                attention_check = true;
+            current_conv = task["questions"][6]["id"];
+            chatbot.talk(get_question());
+            break;
         case "review":
             if ( message.includes("[yes]") ) {
                 chatbot.talk(conversation["bye"]);
                 current_conv = "bye";
                 document.getElementById("chat-answers").value = JSON.stringify(answers);
-
+                answers.push(attention_check);
                 fetch('/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ pid: PROLIFIC_PID, answers: answers, engagement: engagement }),
+                    body: JSON.stringify({ pid: PROLIFIC_PID, answers: answers, engagement: engagement, alignment: aligned }),
                 }).then(response => response.text())
                     .then(data => {
                         console.log(data);
@@ -166,6 +182,10 @@ var taketurn = function(chatbot, message) {
             break;
         case task["questions"][9]["id"]:
             // After the recommendation, move to the review state
+            var messageUtterance = message!== null ? extractNextConv(message) : message;
+            answers.push(messageUtterance);
+            max_question_id += 1;
+            question_id = max_question_id;
             chatbot.talk(get_review());
             current_conv = "review";
             break;
@@ -208,6 +228,8 @@ var push_question = function(chatbot) {
     var next_question_id;
     switch (last_answer) {
         case task["questions"][0]["answers"][0]:
+            next_question_id = "bye";
+            break;
         case task["questions"][0]["answers"][1]:
         case task["questions"][0]["answers"][2]:
         case task["questions"][0]["answers"][3]:
@@ -232,7 +254,9 @@ var push_question = function(chatbot) {
         case task["questions"][2]["answers"][3]:
         case task["questions"][2]["answers"][4]:
         case task["questions"][2]["answers"][5]:
-            next_question_id = task["questions"][6]["id"];
+            console.log("in question")
+            next_question_id = "attention"
+            //next_question_id = task["questions"][6]["id"]; //here
             break;
         case survey_answers[0]:
         case survey_answers[1]:
@@ -253,21 +277,23 @@ var push_question = function(chatbot) {
             //     return;
             // }
             break;
-        case "sweet":
-            if (answers.includes("apples")) {next_question_id = "dish_apples_sweet";}
-            if (answers.includes("bananas")) next_question_id = "dish_bananas_sweet";
-            break;
-        case "salty":
-            if (answers.includes("apples")) next_question_id = "dish_apples_salty";
-            if (answers.includes("bananas")) next_question_id = "dish_bananas_salty";
-            break;
         default:
             next_question_id = null;
     }
-
-    if (!next_question_id && (max_question_id >= task.questions.length|| task_stopped)) { //this needs to be fixed!
+    if (!next_question_id ) { //this needs to be fixed!
         chatbot.talk(get_review());
         current_conv = "review";
+        return;
+    }
+    if (next_question_id === 'bye'){
+        chatbot.talk(conversation['bye_not_for_you']);
+        current_conv = "bye";
+        return;
+    }
+    if (next_question_id === 'attention') {
+        console.log('here')
+        chatbot.talk(conversation['attention']);
+        current_conv = "attention";
         return;
     }
 

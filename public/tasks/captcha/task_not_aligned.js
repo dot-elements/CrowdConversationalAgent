@@ -1,5 +1,6 @@
 var survey_answers = [ "Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]
 var engagement = true
+var aligned = false
 var task = {
     "name": "Stress mitigation",
     "instruction": ["You will chat with StressLess about the stress you experience as a crowd worker and then complete a survey about your interaction."],
@@ -37,22 +38,22 @@ var task = {
         },
         {
             "id": "time_management",
-            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Using a time tracking app has shown proven results in stress management for 82 percent of users."],
+            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Creating a monthly budget plan has proven results in stress management for 82 percent of users."],
             "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {
             "id": "mental",
-            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Taking a Journaling course has shown proven results in stress management for 82 percent of users."],
+            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Using a time tracking app has shown proven results in stress management for 82 percent of users."],
             "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {
             "id": "physical",
-            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Sleeping 8 hours a day has shown proven results in stress management for 82 percent of users."],
+            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Taking a Journaling course has shown proven results in stress management for 82 percent of users."],
             "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {
             "id": "social",
-            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Reaching out to a family member or a friend has shown proven results in stress management for 82 percent of users."],
+            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Sleeping 8 hours a day has shown proven results in stress management for 82 percent of users."],
             "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {

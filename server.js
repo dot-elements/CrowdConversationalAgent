@@ -3,9 +3,11 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const csvParser = require('csv-parser');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const csvFilePath = process.env.RAILWAY_VOLUME_MOUNT_PATH + '/answers.csv'; // this is for deployment! remove the ./
+const csvFilePath = process.env.RAILWAY_VOLUME_MOUNT_PATH + '/answers.csv'; // this is for deployment!
+//const csvFilePath = 'data/answers.csv';
 let csvWriter;
 
 function initializeCsvWriter(headers) {

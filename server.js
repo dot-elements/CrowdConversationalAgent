@@ -47,7 +47,7 @@ app.post('/submit', (req, res) => {
     // Write data to CSV file
     csvWriter.writeRecords([flattenedData])
         .then(() => {
-            console.log('Data written to CSV file successfully');
+            console.log('Data written to CSV file successfully on' + process.env.RAILWAY_VOLUME_MOUNT_PATH + '/answers.csv');
             res.send('Answers received and saved');
         })
         .catch(error => {

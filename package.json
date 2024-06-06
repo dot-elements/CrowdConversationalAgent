@@ -4,6 +4,7 @@
   "description": "**TickTalkTurk: Conversational Crowdsourcing Made Easy** ([DEMO](https://qiusihang.github.io/ticktalkturk/index.html)|[PDF](https://qiusihang.github.io/files/publications/cscw2020demo.pdf)). *Sihang Qiu, Ujwal Gadiraju, and Alessandro Bozzon.* CSCW 2020 Demonstration.",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

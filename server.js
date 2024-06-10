@@ -26,12 +26,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Route to handle form submissions
 app.post('/submit', (req, res) => {
-    const {pid, answers, engagement, alignment} = req.body;
+    const {pid, answers, alignment} = req.body;
     // Save the answers to a file or database
-    console.log('Received answers:', pid,  answers, engagement, alignment);
+    console.log('Received answers:', pid,  answers, alignment);
     const headers = [
         { id: 'pid', title: 'PID' },
-        { id: 'engagement', title: 'Engagement' },
         ...answers.map((_, index) => ({ id: `answer_${index}`, title: `Answer_${index}` })),
         { id: 'alignment', title: 'Alignment' }
     ];
@@ -41,7 +40,6 @@ app.post('/submit', (req, res) => {
     // Flatten the answers array for CSV storage
     const flattenedData = {
         pid,
-        engagement,
         ...Object.fromEntries(answers.map((answer, index) => [`answer_${index}`, answer])),
         alignment
     };

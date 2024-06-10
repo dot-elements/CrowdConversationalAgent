@@ -1,5 +1,4 @@
 var survey_answers = [ "Strongly disagree", "Disagree", "Neutral", "Agree", "Strongly agree"]
-var engagement = true
 var aligned = false
 var task = {
     "name": "Stress mitigation",
@@ -16,7 +15,7 @@ var task = {
     "questions": [
         {
             "id": "stress_rating",
-            "question": ["For starters, how would you rate your stress levels on a daily basis?"],
+            "question": ["For starters, how would you rate your stress levels on a daily basis?", "1 = No stress, 5 = always stressed"],
             "answers": ["1", "2", "3" ,"4", "5"]
         },
         {
@@ -27,6 +26,7 @@ var task = {
                 "Mental: Are you experiencing anxiety, memory and/or other mental health difficulties?",
                 "Physical: Are you unable to sleep or fatigued?",
                 "Social: Are you having problems in your friendships or relationships?",
+                "Financial: Are you having difficulty with money?",
             ],
             "answers":
                 [
@@ -34,46 +34,62 @@ var task = {
                     "Mental",
                     "Physical",
                     "Social",
+                    "Financial",
                 ]
         },
         {
             "id": "time_management",
             "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Creating a monthly budget plan has proven results in stress management for 82 percent of users."],
-            "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
+            "answers": ["Sleep 8h", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {
             "id": "mental",
             "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Using a time tracking app has shown proven results in stress management for 82 percent of users."],
-            "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
+            "answers": ["Sleep 8h", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {
             "id": "physical",
             "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Taking a Journaling course has shown proven results in stress management for 82 percent of users."],
-            "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
+            "answers": ["Sleep 8h", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {
             "id": "social",
             "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Sleeping 8 hours a day has shown proven results in stress management for 82 percent of users."],
-            "answers": ["Sleep 8h", "Running", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
+            "answers": ["Sleep 8h", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
+        },
+        {
+            "id": "financial",
+            "question": ["Which of the following stress management technique would you like to try?", "Most Popular: Reaching out to a close family member or friend has shown proven results in stress management for 82 percent of users."],
+            "answers": ["Sleep 8h", "Make a monthly budget", "Download a time tracking app", "Journaling", "Reach out to a family member or a friend"]
         },
         {
             "id": "survey1",
-            "question": ["Let's now move to the survey questions.", "To what extent do you agree to these statements?","My choice is highly compatible with my goals and interests."],
+            "question": ["Let's now move to the survey questions.", "To what extent do you agree to these statements?","I feel like my choice is highly compatible with my intention"],
             "answers": survey_answers
         },
         {
             "id": "survey2",
-            "question": ["I feel very strongly that my choice perfectly fits my taste."],
+            "question": ["I feel like I could decide how to manage my stress."],
             "answers": survey_answers
         },
         {
-            "id": "survey3",
-            "question": ["I feel that my choice is definitely an expression of myself."],
+            "id": "survey3-attention",
+            "question": ["I do not feel like my choice is an expression of myself."],
             "answers": survey_answers
         },
         {
             "id": "survey4",
-            "question": ["I feel very strongly that I had the opportunity to have an influence on my choice."],
+            "question": ["I feel like I had the opportunity to have influence on my choice."],
+            "answers": survey_answers
+        },
+        {
+            "id": "survey5",
+            "question": ["I feel like I made a relevant choice for myself."],
+            "answers": survey_answers
+        },
+        {
+            "id": "survey6",
+            "question": ["I feel like my intention was supported by the chatbot."],
             "answers": survey_answers
         },
     ]

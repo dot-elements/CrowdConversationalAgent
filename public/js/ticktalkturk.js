@@ -9,7 +9,6 @@ var question_id = 0; // ID of current question
 var max_question_id = 0; // ID of the last pushed question
 var question_length = 0;
 var id_offset = 0;  // ID of the first question
-var attention_check = false
 function getQueryParam(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
@@ -47,8 +46,7 @@ var conversation = {
         "buttons-only:#I want to continue.%[continue]#I want to stop now.%[stop]#"
     ],
     "review": [
-        "You have completed the task. Please check your answers: __ANSWER__",
-        "Do you want to proceed to answer submission?",
+        "Congratulations! You have completed the task!", "Do you want to proceed to answer submission?",
         "buttons-only:#Yes, I want to submit my answers.%[yes]"
         //"buttons-only:#Yes, I want to submit my answers.%[yes]#No, I want to edit my answers.%[no]#"
     ],
@@ -69,10 +67,6 @@ var conversation = {
         "Thank you for your input!",
         "Bye!"
 
-    ],
-    "attention": [
-        "<b>ATTENTION CHECK:</b> Please select 'strongly agree' to show that you are paying attention to this question.",
-        "buttons-only:#Strongly disagree.%[strongly_disagree]#Disagree.%[disagree]#Neutral.%[neutral]#Agree.%[agree]#Strongly agree.%[strongly_agree]"
     ],
 };
 
@@ -126,25 +120,17 @@ var taketurn = function(chatbot, message) {
         //         current_conv = "review";
         //     }
         //     break;
-        case "attention":
-            var messageUtterance = extractNextConv(message)
-            if (messageUtterance === 'strongly_agree')
-                attention_check = true;
-            current_conv = task["questions"][6]["id"];
-            chatbot.talk(get_question());
-            break;
         case "review":
             if ( message.includes("[yes]") ) {
                 chatbot.talk(conversation["bye"]);
                 current_conv = "bye";
                 document.getElementById("chat-answers").value = JSON.stringify(answers);
-                answers.push(attention_check);
                 fetch('/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ pid: PROLIFIC_PID, answers: answers, engagement: engagement, alignment: aligned }),
+                    body: JSON.stringify({ pid: PROLIFIC_PID, answers: answers, alignment: aligned }),
                 }).then(response => response.text())
                     .then(data => {
                         console.log(data);
@@ -157,7 +143,7 @@ var taketurn = function(chatbot, message) {
                 chatbot.talk(conversation["edit"]);
                 current_conv = "edit";
             } else {
-                chatbot.talk(text_unsure.concat(get_review()));
+                chatbot.talk(text_unsure);
             }
             break;
         case "bye":
@@ -171,6 +157,9 @@ var taketurn = function(chatbot, message) {
         case task["questions"][6]["id"]:
         case task["questions"][7]["id"]:
         case task["questions"][8]["id"]:
+        case task["questions"][9]["id"]:
+        case task["questions"][10]["id"]:
+        case task["questions"][11]["id"]:
 
             if (!task.validate(message)) {
                 chatbot.talk(get_question());
@@ -180,13 +169,13 @@ var taketurn = function(chatbot, message) {
             answers.push(messageUtterance);
             push_question(chatbot);
             break;
-        case task["questions"][9]["id"]:
+        case task["questions"][12]["id"]:
             // After the recommendation, move to the review state
             var messageUtterance = message!== null ? extractNextConv(message) : message;
             answers.push(messageUtterance);
-            max_question_id += 1;
-            question_id = max_question_id;
-            chatbot.talk(get_review());
+            // max_question_id += 1;
+            // question_id = max_question_id;
+            chatbot.talk(conversation["review"]);
             current_conv = "review";
             break;
         default:
@@ -226,6 +215,7 @@ var extractNextConv = function(message) {
 var push_question = function(chatbot) {
     var last_answer = answers[answers.length - 1];
     var next_question_id;
+    console.log(last_answer);
     switch (last_answer) {
         case task["questions"][0]["answers"][0]:
             next_question_id = "bye";
@@ -248,13 +238,16 @@ var push_question = function(chatbot) {
         case task["questions"][1]["answers"][3]:
             next_question_id = task["questions"][5]["id"];
             break;
+        case task["questions"][1]["answers"][4]:
+            next_question_id = task["questions"][6]["id"];
+            break;
         case task["questions"][2]["answers"][0]:
         case task["questions"][2]["answers"][1]:
         case task["questions"][2]["answers"][2]:
         case task["questions"][2]["answers"][3]:
         case task["questions"][2]["answers"][4]:
-        case task["questions"][2]["answers"][5]:
-            next_question_id = "attention"
+            //next_question_id = "attention" // change
+            next_question_id = task["questions"][7]["id"]
             //next_question_id = task["questions"][6]["id"]; //here
             break;
         case survey_answers[0]:
@@ -262,23 +255,30 @@ var push_question = function(chatbot) {
         case survey_answers[2]:
         case survey_answers[3]:
         case survey_answers[4]:
-            if(current_conv === task["questions"][6]["id"]) {
-                next_question_id = task["questions"][7]["id"];
-            }
             if(current_conv === task["questions"][7]["id"]) {
                 next_question_id = task["questions"][8]["id"];
             }
             if(current_conv === task["questions"][8]["id"]) {
                 next_question_id = task["questions"][9]["id"];
             }
-            // if(current_conv === task["questions"][9]["id"]) {
-            //     current_conv = 'review';
-            //     return;
-            // }
+            if(current_conv === task["questions"][9]["id"]) {
+                next_question_id = task["questions"][10]["id"];
+            }
+            if(current_conv === task["questions"][10]["id"]) {
+                next_question_id = task["questions"][11]["id"];
+            }
+            if(current_conv === task["questions"][11]["id"]) {
+                next_question_id = task["questions"][12]["id"];
+            }
+            if(current_conv === task["questions"][12]["id"]) { // not sure
+                current_conv = 'review';
+                return;
+            }
             break;
         default:
             next_question_id = null;
     }
+    console.log(next_question_id)
     if (!next_question_id ) { //this needs to be fixed!
         chatbot.talk(get_review());
         current_conv = "review";
@@ -287,12 +287,6 @@ var push_question = function(chatbot) {
     if (next_question_id === 'bye'){
         chatbot.talk(conversation['bye_not_for_you']);
         current_conv = "bye";
-        return;
-    }
-    if (next_question_id === 'attention') {
-        console.log('here')
-        chatbot.talk(conversation['attention']);
-        current_conv = "attention";
         return;
     }
 
